@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111e">
+  <meta name="description" content="LUMEN-LINK: propuesta visual e interactiva para transmitir sonido y datos mediante luz visible. Prototipo conceptual CIECOM 2026.">
+  <title>LUMEN-LINK | Proyecto CIECOM 2026</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07111e;--surface:#0d1c2e;--panel:#10243a;--line:#254158;--text:#edf7ff;--muted:#a5b9cd;--cyan:#67ebec;--purple:#b8a1ff;--gold:#ffcf82;--green:#8ee1b5}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(ellipse 70% 24% at 75% 0%,#12344b 0%,transparent 100%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+    button{font:inherit;cursor:pointer}
+    a{color:var(--cyan)}
+    a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+    .wrap{width:min(1160px,calc(100% - 32px));margin:auto}
+    .topbar{border-bottom:1px solid #21394e;background:#07111ee6}
+    .nav{display:flex;justify-content:space-between;align-items:center;gap:18px;min-height:76px}
+    .logo{font-size:20px;font-weight:900;letter-spacing:-.8px;color:#fff;text-decoration:none;white-space:nowrap}
+    .logo span{color:var(--cyan)}
+    .navlinks{display:flex;flex-wrap:wrap;gap:20px}
+    .navlinks a{font-size:13px;color:#bdd0e0;text-decoration:none}
+    .navlinks a:hover{color:var(--cyan)}
+    .eyebrow{color:var(--cyan);font-size:12px;font-weight:850;letter-spacing:2px;text-transform:uppercase}
+    .hero{padding:68px 0 40px}
+    .hero-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px;align-items:center}
+    h1{font-size:clamp(39px,5.5vw,74px);line-height:1.05;letter-spacing:-2.8px;margin:14px 0 20px}
+    h1 em{font-style:normal;color:var(--cyan)}
+    .lead{font-size:17px;color:#c2d3e3;max-width:560px}
+    .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
+    .chip{font-size:12px;color:#c6d7e7;border:1px solid #37536a;background:#102339;border-radius:30px;padding:8px 12px}
+    .chip strong{color:#fff}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:27px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;border:1px solid #416277;padding:12px 18px;text-decoration:none;font-weight:750;font-size:14px;background:#142a40;color:#fff}
+    .btn.primary{background:#67ebec;color:#071c2a;border-color:#67ebec}
+    .btn:hover{filter:brightness(1.1)}
+    .stage{background:radial-gradient(ellipse at 50% 42%,#1a4157,#0b192b 68%);border:1px solid #2a5267;border-radius:20px;overflow:hidden;box-shadow:0 24px 70px #0004}
+    .stage svg{display:block;width:100%;height:auto}
+    .stage-caption{padding:12px 16px;border-top:1px solid #274258;color:#a8bdce;font-size:12px;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}
+    .section{padding:64px 0}
+    .section-head{max-width:740px;margin-bottom:24px}
+    .section-head h2{font-size:clamp(28px,3.5vw,42px);line-height:1.15;letter-spacing:-1.3px;margin:9px 0 12px}
+    .section-head p{color:var(--muted);margin:0}
+    .callout{background:linear-gradient(135deg,#102c40,#102037);border:1px solid #31546a;border-radius:18px;padding:26px}
+    .pitch{font-size:clamp(18px,2vw,23px);font-weight:600;line-height:1.55;margin:12px 0 18px}
+    .callout-footer{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .hint{font-size:12px;color:var(--muted)}
+    .simulator{border:1px solid #2b4b62;border-radius:20px;background:#0b1a2b;overflow:hidden}
+    .simtop{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:18px 20px;border-bottom:1px solid #284359}
+    .simtop h3{margin:0;font-size:19px}
+    .tag{font-size:11px;color:#ffd8a2;border:1px solid #7d5e3b;border-radius:20px;padding:5px 10px}
+    .control-panel{padding:20px;display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:20px;align-items:start}
+    .field-title{font-size:12px;color:#c6d9e8;font-weight:750;display:block;margin-bottom:10px}
+    .toggle-row{display:flex;gap:8px;flex-wrap:wrap}
+    .toggle{border:1px solid #38536a;background:#152b40;color:#c4d4e4;padding:10px 13px;border-radius:10px;font-size:13px}
+    .toggle[aria-pressed=true]{border-color:var(--cyan);background:#21475a;color:#fff}
+    .range-label{display:flex;justify-content:space-between;gap:10px;color:#c6d9e8;font-size:12px}
+    input[type=range]{width:100%;accent-color:#67ebec;margin:12px 0 4px}
+    .sim-status{margin:0 20px 20px;padding:15px 17px;border:1px solid #33516a;background:#11283b;border-radius:12px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+    .sim-status strong{font-size:13px}
+    .sim-status p{font-size:12px;color:#bbcee0;margin:4px 0 0}
+    .signal{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;white-space:nowrap}
+    .signal-dot{height:11px;width:11px;border-radius:50%;background:var(--green);box-shadow:0 0 14px #8ee1b555}
+    .signal-dot.weak{background:var(--gold);box-shadow:none}
+    .signal-dot.off{background:#ff8295;box-shadow:none}
+    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .tile{background:#102236;border:1px solid #2a465c;border-radius:15px;padding:19px}
+    .tile .num{color:var(--cyan);font-size:12px;font-weight:850;letter-spacing:1px}
+    .tile h3{font-size:16px;line-height:1.25;margin:10px 0}
+    .tile p{font-size:13px;color:#b3c7d8;margin:0}
+    .tile .ico{font-size:27px}
+    .architecture{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:18px}
+    .arch{border:1px solid #33516a;border-radius:12px;background:#10273a;padding:13px 9px;text-align:center;position:relative}
+    .arch strong{display:block;font-size:12px}
+    .arch small{display:block;color:#9eb6c9;font-size:11px;margin-top:6px}
+    .arch:not(:last-child):after{content:"→";position:absolute;right:-11px;top:34%;z-index:2;color:var(--cyan);font-weight:900;font-size:17px}
+    .course{border-top:3px solid var(--cyan)}
+    .course:nth-child(2){border-top-color:var(--purple)}
+    .course:nth-child(3){border-top-color:var(--gold)}
+    .course:nth-child(4){border-top-color:var(--green)}
+    .course:nth-child(5){border-top-color:#ef9fba}
+    .course h3{font-size:14px}
+    .course p{font-size:12px}
+    .twocol{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .box{border:1px solid #2b4961;background:#0e2033;border-radius:17px;padding:23px}
+    .box h3{margin:0 0 13px}
+    table{border-collapse:collapse;width:100%;font-size:13px}
+    th,td{padding:9px 5px;text-align:left;border-bottom:1px solid #284157}
+    th{color:#9cb5c8;font-weight:700}
+    td:last-child,th:last-child{text-align:right;white-space:nowrap}
+    tfoot td{font-weight:850;color:var(--cyan);font-size:16px;border-bottom:0}
+    .timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .phase{background:#102338;border:1px solid #2c4861;border-top:3px solid var(--cyan);border-radius:12px;padding:17px}
+    .phase:nth-child(2){border-top-color:var(--purple)}
+    .phase:nth-child(3){border-top-color:var(--gold)}
+    .phase:nth-child(4){border-top-color:var(--green)}
+    .phase time{color:#acc1d2;font-size:11px}
+    .phase h3{font-size:16px;margin:9px 0}
+    .phase p{font-size:12px;color:#b2c5d6;margin:0}
+    .steps{margin:0;padding-left:22px;color:#c1d2e0}
+    .steps li{margin:12px 0}
+    .steps b{color:#fff}
+    .note{font-size:13px;color:#bdcddd;line-height:1.7}
+    .warning{border-left:3px solid var(--gold);padding:13px 18px;background:#2b2630;border-radius:0 9px 9px 0;color:#f2ddc0;font-size:13px}
+    footer{padding:35px 0 45px;border-top:1px solid #284155;color:#9fb4c7;font-size:12px}
+    footer .footgrid{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+    .beam{animation:beamglow 2s ease-in-out infinite}
+    .moving{animation:flowdash 3s linear infinite}
+    @keyframes beamglow{50%{opacity:.55}}
+    @keyframes flowdash{to{stroke-dashoffset:-100}}
+    @media(max-width:900px){.hero-grid,.twocol{grid-template-columns:1fr}.hero{padding-top:45px}.control-panel{grid-template-columns:1fr 1fr}.grid5{grid-template-columns:repeat(3,1fr)}.architecture{grid-template-columns:repeat(3,1fr)}.arch:after{display:none}}
+    @media(max-width:600px){.wrap{width:min(100% - 26px,1160px)}.nav{align-items:flex-start;flex-direction:column;padding:15px 0}.navlinks{gap:12px}.hero{padding-top:32px}h1{letter-spacing:-1.7px}.section{padding:42px 0}.control-panel,.grid3,.grid5,.twocol{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.architecture{grid-template-columns:1fr 1fr}.sim-status{align-items:flex-start;flex-direction:column}.stage-caption{font-size:11px}.box{padding:17px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.beam,.moving{animation:none}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="wrap nav" aria-label="Navegación principal">
+      <a class="logo" href="#inicio">LUMEN<span>/</span>LINK</a>
+      <div class="navlinks">
+        <a href="#idea">La idea</a>
+        <a href="#simulador">Visualización</a>
+        <a href="#ingenieria">Ingeniería</a>
+        <a href="#plan">Plan y costos</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="wrap hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Propuesta de prototipo · CIECOM 2026</div>
+          <h1>Que la <em>luz</em> lleve la voz.</h1>
+          <p class="lead">Un sistema experimental de dos estaciones que transmite <strong>sonido y datos por luz visible</strong>. Sin un cable de comunicación entre ellas: la información viaja en las variaciones de brillo de un LED.</p>
+          <div class="chips">
+            <span class="chip">📅 Entrega <strong>16 de noviembre</strong></span>
+            <span class="chip">💵 Tope <strong>US$80</strong></span>
+            <span class="chip">🔧 <strong>5 materias</strong> integradas</span>
+          </div>
+          <div class="hero-actions">
+            <a class="btn primary" href="#simulador">Explorar el prototipo ↓</a>
+            <a class="btn" href="#idea">Explicarlo al equipo</a>
+          </div>
+        </div>
+        <div class="stage" aria-label="Representación conceptual de dos estaciones de comunicación óptica">
+          <svg viewBox="0 0 780 425" role="img" aria-labelledby="sceneTitle sceneDesc">
+            <title id="sceneTitle">Maqueta conceptual LUMEN-LINK</title>
+            <desc id="sceneDesc">Un transmisor con LED emite luz hacia un receptor con fotodetector y altavoz. El haz cambia de aspecto según el modo y puede bloquearse.</desc>
+            <defs>
+              <pattern id="floorGrid" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="skewX(-29) scale(1 .5)"><path d="M28 0H0V28" fill="none" stroke="#24455b" stroke-width=".8"/></pattern>
+              <linearGradient id="beamGradient"><stop stop-color="#7affff" stop-opacity=".75"/><stop offset=".5" stop-color="#51cce4" stop-opacity=".13"/><stop offset="1" stop-color="#8fffff" stop-opacity=".8"/></linearGradient>
+              <radialGradient id="halo"><stop stop-color="#6ffbff" stop-opacity=".55"/><stop offset="1" stop-color="#6ffbff" stop-opacity="0"/></radialGradient>
+            </defs>
+            <path d="M0 285L375 130L780 281L395 425Z" fill="url(#floorGrid)" opacity=".9"/>
+            <text x="390" y="46" text-anchor="middle" fill="#88eff0" font-size="15" font-weight="800" letter-spacing="3">CANAL ÓPTICO VISIBLE</text>
+            <g id="beamGroup">
+              <path class="beam" d="M244 174L546 162L546 221L244 182Z" fill="url(#beamGradient)"/>
+              <path class="moving" d="M244 178L546 192" fill="none" stroke="#b6ffff" stroke-width="2" stroke-dasharray="8 12"/>
+              <ellipse cx="245" cy="178" rx="45" ry="45" fill="url(#halo)"/>
+            </g>
+            <path id="waveform" d="" fill="none" stroke="#baffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <g>
+              <path d="M32 288L161 237L313 289L177 348Z" fill="#2a4663" stroke="#6389a5" stroke-width="2"/>
+              <path d="M32 288V311L177 374V348Z" fill="#142940" stroke="#456b86"/>
+              <path d="M177 348V374L313 313V289Z" fill="#1a314a" stroke="#456b86"/>
+              <path d="M91 282L162 255L242 282L169 311Z" fill="#17616c" stroke="#67c8d1" stroke-width="2"/>
+              <path d="M112 282L163 264L218 282L167 300Z" fill="#203e54" stroke="#7eabba"/>
+              <g fill="#9fcbd1"><rect x="133" y="274" width="6" height="10" rx="1"/><rect x="145" y="270" width="6" height="10" rx="1"/><rect x="157" y="266" width="6" height="10" rx="1"/></g>
+              <path d="M218 266L243 181" stroke="#a9d4df" stroke-width="6"/>
+              <circle cx="244" cy="178" r="10" fill="#d6ffff" stroke="#fff" stroke-width="2"/>
+              <path d="M85 302q-18-24-34 0" fill="none" stroke="#ffcf82" stroke-width="4"/>
+              <circle cx="85" cy="302" r="5" fill="#ffcf82"/>
+              <text x="40" y="402" fill="#e9f6ff" font-size="18" font-weight="800">01 · TRANSMISOR</text>
+            </g>
+            <g>
+              <path d="M476 290L610 242L755 290L622 351Z" fill="#294662" stroke="#6389a5" stroke-width="2"/>
+              <path d="M476 290V315L622 375V351Z" fill="#142940" stroke="#456b86"/>
+              <path d="M622 351V375L755 314V290Z" fill="#1a314a" stroke="#456b86"/>
+              <path d="M517 284L594 258L662 284L586 312Z" fill="#17616c" stroke="#67c8d1" stroke-width="2"/>
+              <path d="M541 282L594 266L635 282L586 300Z" fill="#203e54" stroke="#7eabba"/>
+              <path d="M547 263L547 196" stroke="#b2d6df" stroke-width="5"/>
+              <circle cx="547" cy="191" r="10" fill="#a5f4ff" stroke="#eaffff" stroke-width="2"/>
+              <path d="M669 278V202L701 187L726 200V276L694 292Z" fill="#29465e" stroke="#9dbed0" stroke-width="2"/>
+              <ellipse cx="697" cy="242" rx="20" ry="27" fill="#081a2c" stroke="#a1baca" stroke-width="3"/>
+              <ellipse cx="697" cy="242" rx="10" ry="15" fill="#45657b"/>
+              <text x="489" y="402" fill="#e9f6ff" font-size="18" font-weight="800">02 · RECEPTOR</text>
+            </g>
+            <g id="blocker" style="display:none">
+              <path d="M379 127L421 141V301L379 285Z" fill="#c26878" fill-opacity=".93" stroke="#ffb4bb" stroke-width="2"/>
+              <path d="M379 127L394 117L437 132L421 141Z" fill="#e99099"/>
+              <text x="400" y="102" text-anchor="middle" fill="#ffd3d3" font-size="14" font-weight="700">OBSTÁCULO</text>
+            </g>
+          </svg>
+          <div class="stage-caption"><span>Visualización conceptual · no es hardware construido</span><span id="sceneMode">Modo: AUDIO</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea" class="wrap section">
+      <div class="section-head">
+        <div class="eyebrow">01 / El concepto</div>
+        <h2>Así se lo explicamos a nuestros compañeros</h2>
+        <p>Un mensaje sencillo para compartir antes de entrar en los detalles del circuito.</p>
+      </div>
+      <div class="callout">
+        <div class="eyebrow">Explicación en unos 40 segundos</div>
+        <p class="pitch" id="pitchText">“Queremos construir dos estaciones que se comuniquen mediante luz. Una convierte sonido o datos en cambios rápidos del brillo de un LED. La otra detecta esa luz y reconstruye la información. En la feria vamos a reproducir audio, enviar mensajes y bloquear el haz para demostrar qué ocurre cuando falla el canal. No será solo una maqueta: construiremos el circuito, programaremos la transmisión y mediremos sus límites. Todo con un presupuesto máximo de 80 dólares.”</p>
+        <div class="callout-footer">
+          <span class="hint">Idea principal: convertir la luz en un canal de comunicación que podamos observar y medir.</span>
+          <button class="btn" id="copyPitch" type="button">Copiar explicación</button>
+        </div>
+      </div>
+      <div class="grid3" style="margin-top:15px">
+        <article class="tile"><div class="ico" aria-hidden="true">🎙️</div><h3>Entrada</h3><p>Hablamos por un micrófono o enviamos un mensaje desde un microcontrolador.</p></article>
+        <article class="tile"><div class="ico" aria-hidden="true">💡</div><h3>Transmisión</h3><p>El circuito hace variar la luz del LED siguiendo la señal que queremos enviar.</p></article>
+        <article class="tile"><div class="ico" aria-hidden="true">🔊</div><h3>Salida</h3><p>Un sensor de luz recupera la señal para escucharla o leer el mensaje recibido.</p></article>
+      </div>
+    </section>
+
+    <section id="simulador" class="wrap section">
+      <div class="section-head">
+        <div class="eyebrow">02 / Representación gráfica</div>
+        <h2>Prueba el principio antes de construirlo</h2>
+        <p>Selecciona audio o datos, cambia la distancia e interrumpe el haz. Los controles muestran una <strong>ilustración interactiva</strong>, no una simulación electrónica validada.</p>
+      </div>
+      <div class="simulator">
+        <div class="simtop"><h3>Laboratorio óptico interactivo</h3><span class="tag">DEMO CONCEPTUAL · NO MEDICIONES</span></div>
+        <div class="control-panel">
+          <div>
+            <span class="field-title">¿Qué transmitimos?</span>
+            <div class="toggle-row" role="group" aria-label="Modo de transmisión">
+              <button class="toggle" id="modeAudio" type="button" aria-pressed="true">♫ Audio</button>
+              <button class="toggle" id="modeData" type="button" aria-pressed="false">▦ Datos</button>
+            </div>
+          </div>
+          <div>
+            <label class="range-label" for="distance"><span>Distancia ilustrada</span><strong id="distanceValue">40 cm</strong></label>
+            <input id="distance" type="range" min="20" max="120" step="10" value="40">
+            <div class="hint">La distancia real dependerá del circuito y de la alineación.</div>
+          </div>
+          <div>
+            <span class="field-title">Condición del canal</span>
+            <button class="toggle" id="toggleBlock" type="button" aria-pressed="false">▥ Bloquear el haz</button>
+            <div class="hint" style="margin-top:10px">La obstrucción cambia el resultado esperado.</div>
+          </div>
+        </div>
+        <div class="sim-status" role="status" aria-live="polite">
+          <div><strong id="simTitle">Enlace óptico despejado</strong><p id="simDescription">La luz llega al receptor. La línea animada representa la variación de la señal de audio.</p></div>
+          <div class="signal"><span class="signal-dot" id="signalDot" aria-hidden="true"></span><span id="signalText">Condición favorable</span></div>
+        </div>
+      </div>
+      <p class="note">En el montaje real no mostraremos porcentajes inventados: registraremos distancia, condiciones de luz, nivel de audio recuperado y proporción de paquetes recibidos correctamente.</p>
+    </section>
+
+    <section id="ingenieria" class="wrap section">
+      <div class="section-head">
+        <div class="eyebrow">03 / Ingeniería real</div>
+        <h2>¿Qué construiremos y qué aporta cada materia?</h2>
+        <p>La parte interesante no es comprar un aparato hecho: es diseñar, ajustar, programar y comprobar los bloques del enlace.</p>
+      </div>
+      <div class="architecture" aria-label="Diagrama de bloques del sistema">
+        <div class="arch"><strong>1 · Fuente</strong><small>Micrófono / datos</small></div>
+        <div class="arch"><strong>2 · Acondicionar</strong><small>Preamp / ESP32</small></div>
+        <div class="arch"><strong>3 · Controlar</strong><small>Driver y corriente</small></div>
+        <div class="arch"><strong>4 · Luz</strong><small>LED modulado</small></div>
+        <div class="arch"><strong>5 · Detectar</strong><small>Fototransistor</small></div>
+        <div class="arch"><strong>6 · Recuperar</strong><small>Altavoz / ESP32</small></div>
+      </div>
+      <p class="note">Habrá dos rutas seleccionables sobre el mismo canal óptico: <b>audio analógico</b> y <b>datos digitales por encendido/apagado (OOK)</b>. No se promete que funcionen simultáneamente.</p>
+      <div class="grid5" style="margin-top:22px">
+        <article class="tile course"><span class="num">01</span><h3>Electrónica de potencia</h3><p>Driver de LED, limitación y medición de corriente, consumo y protección a 5 V.</p></article>
+        <article class="tile course"><span class="num">02</span><h3>Ingeniería de sonido</h3><p>Micrófono, preamplificación, recuperación de audio y pruebas de ruido.</p></article>
+        <article class="tile course"><span class="num">03</span><h3>Microprocesadores</h3><p>Programación de los ESP32, temporización, mensajes y control de pruebas.</p></article>
+        <article class="tile course"><span class="num">04</span><h3>Teoría de comunicación</h3><p>Modulación de intensidad, relación señal/ruido y efectos del canal.</p></article>
+        <article class="tile course"><span class="num">05</span><h3>Transmisión de datos</h3><p>Tramas, sincronización, comprobación de errores y recepción correcta.</p></article>
+      </div>
+      <p class="warning" style="margin-top:19px"><strong>Alcance académico:</strong> la contribución a electrónica de potencia es modesta porque trabajaremos con un LED de baja potencia y 5 V. La innovación no consiste en haber inventado la comunicación por luz, sino en crear una plataforma experimental económica que combine audio, datos y mediciones propias.</p>
+    </section>
+
+    <section id="plan" class="wrap section">
+      <div class="section-head">
+        <div class="eyebrow">04 / Factibilidad</div>
+        <h2>Un proyecto para terminar, no solo imaginar</h2>
+        <p>Presupuesto preliminar y una ruta corta con prioridades. Los precios son <strong>estimaciones por validar</strong> con proveedores y materiales disponibles.</p>
+      </div>
+      <div class="twocol">
+        <div class="box">
+          <h3>Presupuesto objetivo: US$74</h3>
+          <table>
+            <thead><tr><th>Componente</th><th>Estimado</th></tr></thead>
+            <tbody>
+              <tr><td>2 placas ESP32 económicas</td><td>$14</td></tr>
+              <tr><td>LED, transistor y resistencias de driver</td><td>$8</td></tr>
+              <tr><td>Fotodetector y amplificación</td><td>$12</td></tr>
+              <tr><td>Micrófono y salida de audio</td><td>$6</td></tr>
+              <tr><td>Protoboards, cables y conexiones</td><td>$10</td></tr>
+              <tr><td>Alimentación de 5 V</td><td>$6</td></tr>
+              <tr><td>Base y presentación física</td><td>$8</td></tr>
+              <tr><td>Reserva para imprevistos</td><td>$10</td></tr>
+            </tbody>
+            <tfoot><tr><td>Total objetivo</td><td>$74</td></tr></tfoot>
+          </table>
+          <p class="note">Margen hasta el máximo: <strong>US$6</strong>. Transporte, envío e impuestos no están cotizados. Si elevan el total, habrá que reutilizar materiales o reducir el montaje.</p>
+        </div>
+        <div class="box">
+          <h3>¿Qué demostraremos en 3 minutos?</h3>
+          <ol class="steps">
+            <li><b>Minuto 1:</b> explicamos las dos estaciones y reproducimos audio transmitido por luz.</li>
+            <li><b>Minuto 2:</b> interponemos un obstáculo y mostramos el efecto en la recepción.</li>
+            <li><b>Minuto 3:</b> enviamos un mensaje digital y enseñamos las mediciones obtenidas.</li>
+          </ol>
+          <p class="warning"><strong>Plan B:</strong> si la transmisión de datos no está lista, presentamos el enlace de audio y un estudio cuantitativo de distancia, obstrucción y ruido. Mejor un resultado real que una demostración fingida.</p>
+        </div>
+      </div>
+      <div class="section-head" style="margin-top:40px"><h2>Calendario hasta el 16 de noviembre</h2></div>
+      <div class="timeline">
+        <article class="phase"><time>5–7 NOV</time><h3>Validar piezas</h3><p>Inventario, compras, LED, sensor y primera señal detectable.</p></article>
+        <article class="phase"><time>8–10 NOV</time><h3>Hacer sonar</h3><p>Micrófono, modulación óptica y reproducción en receptor.</p></article>
+        <article class="phase"><time>11–13 NOV</time><h3>Enviar datos</h3><p>Programar tramas y contar recepciones correctas.</p></article>
+        <article class="phase"><time>14–16 NOV</time><h3>Medir y presentar</h3><p>Pruebas, base física, póster y ensayo de exposición.</p></article>
+      </div>
+    </section>
+
+    <section class="wrap section" style="padding-top:10px">
+      <div class="callout">
+        <div class="eyebrow">La pregunta científica</div>
+        <h2 style="font-size:clamp(23px,3vw,33px);line-height:1.3;margin:12px 0">¿Cómo afectan la distancia y las interrupciones de luz a la calidad del audio y a la recepción de datos?</h2>
+        <p class="note">Responderemos con pruebas repetibles, una tabla de resultados y un prototipo de bajo voltaje. Utilizaremos alimentación de 5 V y evitaremos conexiones a la red eléctrica o fuentes luminosas peligrosas.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footgrid">
+      <span><strong>LUMEN-LINK</strong> · Propuesta visual de equipo para CIECOM 2026</span>
+      <span>Concepto interactivo · sin hardware conectado ni mediciones verificadas</span>
+      <a href="https://github.com/josanto21/Proyecto-CIECOM" rel="noopener noreferrer">Repositorio del proyecto</a>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      "use strict";
+      var mode="audio",blocked=false;
+      var distance=document.getElementById("distance");
+      var modeAudio=document.getElementById("modeAudio");
+      var modeData=document.getElementById("modeData");
+      var toggleBlock=document.getElementById("toggleBlock");
+      var waveform=document.getElementById("waveform");
+      var beamGroup=document.getElementById("beamGroup");
+      var blocker=document.getElementById("blocker");
+      var signalDot=document.getElementById("signalDot");
+      function update(){
+        var cm=Number(distance.value);
+        var weak=cm>=90;
+        document.getElementById("distanceValue").textContent=cm+" cm";
+        modeAudio.setAttribute("aria-pressed",String(mode==="audio"));
+        modeData.setAttribute("aria-pressed",String(mode==="data"));
+        toggleBlock.setAttribute("aria-pressed",String(blocked));
+        toggleBlock.textContent=blocked?"▥ Retirar obstáculo":"▥ Bloquear el haz";
+        blocker.style.display=blocked?"":"none";
+        beamGroup.style.opacity=blocked?".10":weak?".5":"1";
+        document.getElementById("sceneMode").textContent="Modo: "+(mode==="audio"?"AUDIO":"DATOS");
+        var amplitude=blocked?0:weak?7:17;
+        var path="",x,y;
+        if(mode==="audio"){
+          for(var i=0;i<=100;i++){
+            x=337+i*2.92;
+            y=192-amplitude*Math.sin(i/100*Math.PI*10);
+            path+=(i===0?"M":"L")+x.toFixed(2)+" "+y.toFixed(2)+" ";
+          }
+        }else{
+          var levels=[1,0,1,1,0,1,0,0,1,0,1,1,0,1,0,1];
+          for(var j=0;j<levels.length;j++){
+            x=337+j*18.25;
+            y=192-(levels[j]?amplitude:-amplitude);
+            if(j===0)path+="M"+x+" "+y+" ";
+            else path+="L"+x+" "+y+" ";
+            path+="H"+(x+18.25)+" ";
+          }
+        }
+        waveform.setAttribute("d",path);
+        waveform.style.opacity=blocked?".2":"1";
+        var title=document.getElementById("simTitle");
+        var desc=document.getElementById("simDescription");
+        var status=document.getElementById("signalText");
+        signalDot.className="signal-dot";
+        if(blocked){
+          title.textContent="Haz interrumpido";
+          desc.textContent="El obstáculo impide la trayectoria directa. Se espera que el audio o los paquetes dejen de recuperarse.";
+          status.textContent="Recepción interrumpida";
+          signalDot.classList.add("off");
+        }else if(weak){
+          title.textContent="Mayor distancia: enlace más exigente";
+          desc.textContent="La señal recibida podría debilitarse. El alcance real deberá medirse con el hardware.";
+          status.textContent="Condición exigente";
+          signalDot.classList.add("weak");
+        }else{
+          title.textContent="Enlace óptico despejado";
+          desc.textContent=mode==="audio"?"La onda representa variaciones de intensidad que podrían transportar audio.":"Los pulsos representan bits que podrían formar un mensaje digital.";
+          status.textContent="Condición favorable";
+        }
+      }
+      modeAudio.addEventListener("click",function(){mode="audio";update()});
+      modeData.addEventListener("click",function(){mode="data";update()});
+      toggleBlock.addEventListener("click",function(){blocked=!blocked;update()});
+      distance.addEventListener("input",update);
+      document.getElementById("copyPitch").addEventListener("click",function(){
+        var btn=this;
+        var content=document.getElementById("pitchText").textContent;
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+          navigator.clipboard.writeText(content).then(function(){btn.textContent="Copiado ✓";setTimeout(function(){btn.textContent="Copiar explicación"},2000)}).catch(function(){btn.textContent="Selecciona el texto para copiar"});
+        }else{
+          btn.textContent="Selecciona el texto para copiar";
+        }
+      });
+      update();
+    })();
+  </script>
+</body>
+</html>
